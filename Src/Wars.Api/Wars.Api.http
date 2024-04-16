@@ -1,0 +1,34 @@
+@Wars.Api_HostAddress = https://localhost:7197
+
+
+### Register
+POST {{ Wars.Api_HostAddress }}/register
+Accept: application/json
+Content-Type: application/json
+
+{
+  "emailAddress": "bendikj@gmail.com",
+  "password": "$ecr3tP$s4W0rd"
+}
+
+### Login
+POST {{ Wars.Api_HostAddress }}/login
+Accept: application/json
+Content-Type: application/json
+
+{
+  "emailAddress": "bendikj@gmail.com",
+  "password": "$ecr3tP$s4W0rd"
+}
+
+> {% client.global.set("AccessToken", response.body.accessToken); %}
+
+### Create village
+POST {{ Wars.Api_HostAddress }}/create-village
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{ AccessToken }}
+
+{
+  "name": "Riverwood"
+}
