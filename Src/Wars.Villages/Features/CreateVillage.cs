@@ -17,6 +17,12 @@ internal static class CreateVillage
         private readonly ILogger<Endpoint> _logger = logger;
         private readonly IMediator _mediator = mediator;
 
+        public override void Configure()
+        {
+            Post("create-village");
+            Claims("UserId");
+        }
+
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
             var userId = User.FindFirst("UserId")!.Value;
@@ -35,12 +41,6 @@ internal static class CreateVillage
             await _villagesRepository.SaveChangesAsync(ct);
 
             await _mediator.Publish(new VillageCreatedIntegrationEvent(newVillage.Id.ToString()), ct);
-        }
-
-        public override void Configure()
-        {
-            Post("create-village");
-            Claims("UserId");
         }
 
         internal record Request(string Name);
