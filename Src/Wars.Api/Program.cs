@@ -21,7 +21,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddAuthentication();
 
 List<Assembly> mediatrAssemblies = [typeof(Program).Assembly];
-builder.Services.AddUserModuleServices(builder.Configuration, logger, mediatrAssemblies);
+builder.Services.AddUserModuleServices(builder.Configuration, logger);
 builder.Services.AddVillageModuleServices(builder.Configuration, logger, mediatrAssemblies);
 builder.Services.AddResourceModuleServices(builder.Configuration, logger, mediatrAssemblies);
 
