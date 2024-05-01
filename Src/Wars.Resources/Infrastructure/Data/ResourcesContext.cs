@@ -1,11 +1,12 @@
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+using Wars.Resources.Domain;
 
 namespace Wars.Resources.Infrastructure.Data;
 
-internal class ResourcesDbContext(DbContextOptions<ResourcesDbContext> options) : DbContext(options)
+internal class ResourcesContext(DbContextOptions<ResourcesContext> options) : DbContext(options)
 {
-    public required DbSet<Domain.Resources> Resources { get; init; }
+    public DbSet<Village> Villages => Set<Village>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -15,6 +16,6 @@ internal class ResourcesDbContext(DbContextOptions<ResourcesDbContext> options) 
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
-        configurationBuilder.Properties<decimal>().HavePrecision(18, 6);
+        configurationBuilder.Properties<float>().HavePrecision(18, 6);
     }
 }

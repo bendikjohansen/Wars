@@ -16,8 +16,8 @@ public static class UsersModuleServiceExtensions
         IList<Assembly> mediatRAssemblies)
     {
         // Add services
-        services.AddDbContext<UsersDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("Users")));
-        services.AddIdentityCore<ApplicationUser>().AddEntityFrameworkStores<UsersDbContext>();
+        services.AddDbContext<UsersContext>(options => options.UseNpgsql(configuration.GetConnectionString("Users")));
+        services.AddIdentityCore<ApplicationUser>().AddEntityFrameworkStores<UsersContext>();
 
         // Opt into using MediatR
         mediatRAssemblies.Add(typeof(UsersModuleServiceExtensions).Assembly);

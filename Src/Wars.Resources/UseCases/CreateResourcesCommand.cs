@@ -1,9 +1,10 @@
 using Ardalis.Result;
 using MediatR;
+using Wars.Resources.Domain;
 
 namespace Wars.Resources.UseCases;
 
-internal record CreateResourcesCommand(string VillageId) : IRequest<Result>;
+internal record CreateResourcesCommand(string VillageId) : IRequest<Result>, IRequest<Result<Village>>;
 
 internal class CreateResourceCommandHandler(IResourcesRepository repository) : IRequestHandler<CreateResourcesCommand, Result>
 {
@@ -17,9 +18,9 @@ internal class CreateResourceCommandHandler(IResourcesRepository repository) : I
             return Result.Error($"Resources already exists for village with ID {request.VillageId}.");
         }
 
-        var resources = new Domain.Resources
+        var resources = new Village
         {
-            VillageId = request.VillageId
+            Id = request.VillageId
         };
         _repository.Add(resources);
         await _repository.SaveChangesAsync(ct);

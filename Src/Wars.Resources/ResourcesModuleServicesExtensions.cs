@@ -16,7 +16,7 @@ public static class ResourcesModuleServicesExtensions
     {
         // Set up database
         var connectionString = configuration.GetConnectionString("Resources");
-        services.AddDbContext<ResourcesDbContext>(options => options.UseNpgsql(connectionString));
+        services.AddDbContext<ResourcesContext>(options => options.UseNpgsql(connectionString));
 
         // Opt into mediatr
         mediatrAssemblies.Add(typeof(ResourcesModuleServicesExtensions).Assembly);

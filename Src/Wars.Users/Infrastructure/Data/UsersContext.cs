@@ -4,9 +4,9 @@ using Wars.Users.Domain;
 
 namespace Wars.Users.Infrastructure.Data;
 
-internal class UsersDbContext(DbContextOptions<UsersDbContext> options) : IdentityDbContext(options)
+internal class UsersContext(DbContextOptions<UsersContext> options) : IdentityDbContext(options)
 {
-    public required DbSet<ApplicationUser> ApplicationUsers { get; init; }
+    public DbSet<ApplicationUser> ApplicationUsers => Set<ApplicationUser>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

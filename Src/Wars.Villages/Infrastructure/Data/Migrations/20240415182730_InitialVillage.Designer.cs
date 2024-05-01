@@ -11,7 +11,7 @@ using Wars.Villages.Infrastructure.Data;
 
 namespace Wars.Villages.Infrastructure.Data.Migrations
 {
-    [DbContext(typeof(VillagesDbContext))]
+    [DbContext(typeof(VillagesContext))]
     [Migration("20240415182730_InitialVillage")]
     partial class InitialVillage
     {

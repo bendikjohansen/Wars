@@ -15,7 +15,7 @@ public static class VillagesModuleServiceExtensions
         IList<Assembly> mediatRAssemblies)
     {
         // Setup database
-        services.AddDbContext<VillagesDbContext>(options =>
+        services.AddDbContext<VillagesContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("Villages")));
 
         // Opt into mediatr

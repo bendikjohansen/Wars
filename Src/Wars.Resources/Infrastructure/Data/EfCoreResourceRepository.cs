@@ -1,18 +1,19 @@
 using Microsoft.EntityFrameworkCore;
+using Wars.Resources.Domain;
 
 namespace Wars.Resources.Infrastructure.Data;
 
-internal class EfCoreResourceRepository(ResourcesDbContext dbContext) : IResourcesRepository
+internal class EfCoreResourceRepository(ResourcesContext context) : IResourcesRepository
 {
-    private readonly ResourcesDbContext _dbContext = dbContext;
+    private readonly ResourcesContext _context = context;
 
-    public Task<Domain.Resources?> GetAsync(string villageId, CancellationToken ct = default)
-        => _dbContext.Resources.SingleOrDefaultAsync(r => r.VillageId == villageId, ct);
+    public Task<Village?> GetAsync(string id, CancellationToken ct = default)
+        => _context.Villages.SingleOrDefaultAsync(r => r.Id == id, ct);
 
-    public void Add(Domain.Resources resources)
+    public void Add(Village village)
     {
-        _dbContext.Resources.Add(resources);
+        _context.Villages.Add(village);
     }
 
-    public Task SaveChangesAsync(CancellationToken ct = default) => _dbContext.SaveChangesAsync(ct);
+    public Task SaveChangesAsync(CancellationToken ct = default) => _context.SaveChangesAsync(ct);
 }

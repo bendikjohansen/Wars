@@ -5,9 +5,9 @@ using Wars.Villages.Domain;
 
 namespace Wars.Villages.Infrastructure.Data;
 
-internal class VillagesDbContext(DbContextOptions<VillagesDbContext> options, IDomainEventDispatcher? dispatcher): DbContext(options)
+internal class VillagesContext(DbContextOptions<VillagesContext> options, IDomainEventDispatcher? dispatcher): DbContext(options)
 {
-    public required DbSet<Village> Villages { get; init; }
+    public DbSet<Village> Villages => Set<Village>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

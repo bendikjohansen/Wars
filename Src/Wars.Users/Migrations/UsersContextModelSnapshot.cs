@@ -10,8 +10,8 @@ using Wars.Users.Infrastructure.Data;
 
 namespace Wars.Users.Migrations
 {
-    [DbContext(typeof(UsersDbContext))]
-    partial class UsersDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(UsersContext))]
+    partial class UsersContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {

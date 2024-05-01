@@ -11,7 +11,7 @@ using Wars.Users.Infrastructure.Data;
 
 namespace Wars.Users.Migrations
 {
-    [DbContext(typeof(UsersDbContext))]
+    [DbContext(typeof(UsersContext))]
     [Migration("20240415172641_InitialUsers")]
     partial class InitialUsers
     {

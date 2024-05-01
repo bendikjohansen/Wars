@@ -32,3 +32,13 @@ Authorization: Bearer {{ AccessToken }}
 {
   "name": "Riverwood"
 }
+
+### Collect Resources
+POST {{ Wars.Api_HostAddress }}/collect-resources
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{ AccessToken }}
+
+{
+  "villageId": "04d1dab2-b495-4764-ad49-b758717f9ef9"
+}
