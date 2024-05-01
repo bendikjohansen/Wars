@@ -1,4 +1,4 @@
-using Wars.Villages.Domain;
+using Wars.Villages.Models;
 
 namespace Wars.Villages;
 

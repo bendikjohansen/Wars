@@ -2,7 +2,6 @@ using System.Reflection;
 using FastEndpoints;
 using FastEndpoints.Security;
 using Serilog;
-using Wars.Common;
 using Wars.Resources;
 using Wars.Users;
 using Wars.Villages;
@@ -26,9 +25,6 @@ builder.Services.AddUserModuleServices(builder.Configuration, logger, mediatrAss
 builder.Services.AddVillageModuleServices(builder.Configuration, logger, mediatrAssemblies);
 builder.Services.AddResourceModuleServices(builder.Configuration, logger, mediatrAssemblies);
 
-// Common modules
-builder.Services.AddScoped<IDomainEventDispatcher, MediatrDomainEventDispatcher>();
-
 builder.Services.AddMediatR(config => config.RegisterServicesFromAssemblies(mediatrAssemblies.ToArray()));
 
 var app = builder.Build();
@@ -39,3 +35,5 @@ app.UseAuthorization();
 app.UseFastEndpoints();
 
 app.Run();
+
+public partial class Program;

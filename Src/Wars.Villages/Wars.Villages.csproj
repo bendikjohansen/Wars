@@ -11,7 +11,9 @@
       <Folder Include="Infrastructure\Data\Migrations\" />
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\Wars.Common\Wars.Common.csproj" />
       <ProjectReference Include="..\Wars.Villages.Contracts\Wars.Villages.Contracts.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <InternalsVisibleTo Include="Wars.Villages.Tests" />
     </ItemGroup>
 </Project>

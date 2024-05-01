@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Wars.Villages.Domain;
+using Wars.Villages.Models;
 
 namespace Wars.Villages.Infrastructure.Data;
 

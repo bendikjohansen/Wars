@@ -1,18 +1,10 @@
-using System.ComponentModel.DataAnnotations.Schema;
-using Wars.Common;
+namespace Wars.Villages.Models;
 
-namespace Wars.Villages.Domain;
-
-internal record Village : IHaveDomainEvents
+internal record Village
 {
     public Guid Id { get; } = Guid.NewGuid();
     public string OwnerId { get; private set; } = string.Empty;
     public string Name { get; private set; } = string.Empty;
-
-    private readonly List<BaseDomainEvent> _domainEvents = [];
-    [NotMapped] public IEnumerable<BaseDomainEvent> DomainEvents => _domainEvents.ToArray();
-
-    public void ClearEvents() => _domainEvents.Clear();
 
     internal static class Factory
     {
@@ -27,7 +19,6 @@ internal record Village : IHaveDomainEvents
                 Name = name
             };
 
-            village._domainEvents.Add(new VillageCreatedEvent(village.Id));
             return village;
         }
     }
