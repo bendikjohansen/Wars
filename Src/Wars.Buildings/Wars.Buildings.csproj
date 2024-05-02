@@ -13,4 +13,8 @@
     <ItemGroup>
         <ProjectReference Include="..\Wars.Resources.Contracts\Wars.Resources.Contracts.csproj"/>
     </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="Wars.Buildings.Tests"/>
+    </ItemGroup>
 </Project>

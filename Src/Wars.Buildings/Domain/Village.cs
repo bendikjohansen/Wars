@@ -6,51 +6,38 @@ internal record Village
     public BuildingLevelRegistry BuildingLevels { get; private init; } = new();
 
     private readonly List<BuildingJob> _jobs = [];
-    public IEnumerable<BuildingJob> Jobs => _jobs.ToArray();
+    public IEnumerable<BuildingJob> UpgradeQueue => _jobs.ToArray();
 
-    public void QueueUpgrade(BuildingType building, BuildingCost buildingCost)
+    public void QueueUpgrade(BuildingType building, DateTimeOffset now, BuildingDurationLookup durationLookup,
+        BuildingCostLookup costLookup)
     {
         var buildingLevel = GetBuildingLevelAfterQueue(building) + 1;
-        if (buildingLevel >= 30)
-        {
-            throw new Exception("Building cannot be upgraded beyond level 30");
-        }
-
-        var upgradeCost = buildingCost.ForUpgrading(building, buildingLevel);
+        var upgradeCost = costLookup(building, buildingLevel);
+        var duration = durationLookup(building, buildingLevel);
         var newJob = new BuildingJob
         {
             Building = building,
             Cost = upgradeCost,
-            JobType = JobType.Upgrade,
-            Duration = TimeSpan.FromMinutes(Math.Pow(buildingLevel, 2))
+            StartedAt = now,
+            Duration = duration
         };
         _jobs.Add(newJob);
     }
 
-    public void QueueDemolition(BuildingType building, BuildingCost buildingCost)
+    public void ProcessFinishedUpgrades(DateTimeOffset now)
     {
-        var buildingLevel = GetBuildingLevelAfterQueue(building) - 1;
-        if (buildingLevel <= 1)
+        var finishedJobs = _jobs.TakeWhile(job => job.IsFinished(now)).ToArray();
+        _jobs.RemoveAll(job => finishedJobs.Contains(job));
+
+        foreach (var job in finishedJobs)
         {
-            throw new Exception("Building cannot be demolished to less than level 1");
+            BuildingLevels.IncreaseLevel(job.Building);
         }
-
-        var recycleValue = buildingCost.ForDemolishing(building, buildingLevel);
-        var newJob = new BuildingJob
-        {
-            Building = building,
-            Cost = recycleValue,
-            JobType = JobType.Demolish,
-            Duration = TimeSpan.FromMinutes(Math.Pow(buildingLevel, 1.5))
-        };
-        _jobs.Add(newJob);
     }
 
-    public int GetBuildingLevelAfterQueue(BuildingType building)
+    private int GetBuildingLevelAfterQueue(BuildingType building)
     {
-        var levelDelta = Jobs
-            .Where(job => job.Building == building)
-            .Sum(job => job.JobType == JobType.Demolish ? -1 : 1);
+        var levelDelta = UpgradeQueue.Count(job => job.Building == building);
         var buildingLevel = levelDelta + building switch
         {
             BuildingType.Headquarter => BuildingLevels.Headquarter,
@@ -66,9 +53,34 @@ internal record Village
 
 internal record BuildingLevelRegistry
 {
-    public int ClayPit { get; set; } = 3;
-    public int LumberCamp { get; set; } = 3;
-    public int IronMine { get; set; } = 3;
-    public int Warehouse { get; set; } = 1;
-    public int Headquarter { get; set; } = 1;
+    public int ClayPit { get; private set; } = 3;
+    public int LumberCamp { get; private set; } = 3;
+    public int IronMine { get; private set; } = 3;
+    public int Warehouse { get; private set; } = 1;
+    public int Headquarter { get; private set; } = 1;
+
+
+    public void IncreaseLevel(BuildingType building)
+    {
+        if (building == BuildingType.Headquarter)
+        {
+            Headquarter += 1;
+        }
+        else if (building == BuildingType.Warehouse)
+        {
+            Warehouse += 1;
+        }
+        else if (building == BuildingType.IronMine)
+        {
+            IronMine += 1;
+        }
+        else if (building == BuildingType.ClayPit)
+        {
+            ClayPit += 1;
+        }
+        else if (building == BuildingType.LumberCamp)
+        {
+            LumberCamp += 1;
+        }
+    }
 }

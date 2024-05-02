@@ -1,7 +1,6 @@
 using Ardalis.Result;
 using MediatR;
 using Wars.Buildings.Domain;
-using Wars.Resources.Contracts;
 
 namespace Wars.Buildings.Features;
 
@@ -18,33 +17,33 @@ internal static class QueueUpgrade
         public async Task<Result> Handle(Command request, CancellationToken ct)
         {
             var village = await _repository.GetAsync(request.VillageId);
-            if (village is null)
-            {
-                return Result.NotFound();
-            }
-
-            var level = village.GetBuildingLevelAfterQueue(request.Building);
-            var buildingCostCalculator = new BuildingCost();
-            var cost = buildingCostCalculator.ForUpgrading(request.Building, level + 1);
-
-            var hasFundsQuery = new HasFundsQuery(request.VillageId, cost.Clay, cost.Iron, cost.Wood);
-            var hasFundsResponse = await _mediator.Send(hasFundsQuery, ct);
-            if (!hasFundsResponse.IsSuccess)
-            {
-                return Result.Error(hasFundsResponse.Errors.ToArray());
-            }
-
-            if (!hasFundsResponse.Value.Available)
-            {
-                return Result.Error("Not enough funds");
-            }
-
-            village.QueueUpgrade(request.Building, buildingCostCalculator);
-            await _repository.SaveChangesAsync(ct);
-
-            var reason = $"Upgrading {request.Building.ToString()} to level {level + 1}.";
-            var payCommand = new PayCommand(request.VillageId, cost.Clay, cost.Iron, cost.Wood, reason);
-            await _mediator.Send(payCommand, ct);
+            // if (village is null)
+            // {
+            //     return Result.NotFound();
+            // }
+            //
+            // var level = village.GetBuildingLevelAfterQueue(request.Building);
+            // var buildingCostCalculator = new BuildingCost();
+            // var cost = buildingCostCalculator.ForUpgrading(request.Building, level + 1);
+            //
+            // var hasFundsQuery = new HasFundsQuery(request.VillageId, cost.Clay, cost.Iron, cost.Wood);
+            // var hasFundsResponse = await _mediator.Send(hasFundsQuery, ct);
+            // if (!hasFundsResponse.IsSuccess)
+            // {
+            //     return Result.Error(hasFundsResponse.Errors.ToArray());
+            // }
+            //
+            // if (!hasFundsResponse.Value.Available)
+            // {
+            //     return Result.Error("Not enough funds");
+            // }
+            //
+            // village.QueueUpgrade(request.Building, (_, _) => buildingCostCalculator);
+            // await _repository.SaveChangesAsync(ct);
+            //
+            // var reason = $"Upgrading {request.Building.ToString()} to level {level + 1}.";
+            // var payCommand = new PayCommand(request.VillageId, cost.Clay, cost.Iron, cost.Wood, reason);
+            // await _mediator.Send(payCommand, ct);
 
             return Result.Success();
         }
