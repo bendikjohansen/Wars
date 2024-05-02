@@ -7,7 +7,8 @@ namespace Wars.Users.Features;
 
 internal static class Login
 {
-    internal class Endpoint(UserManager<ApplicationUser> userManager) : Endpoint<Endpoint.RequestBody, Endpoint.ResponseBody>
+    internal class Endpoint(UserManager<ApplicationUser> userManager)
+        : Endpoint<RequestBody, ResponseBody>
     {
         private readonly UserManager<ApplicationUser> _userManager = userManager;
 
@@ -42,9 +43,9 @@ internal static class Login
 
             await SendAsync(new ResponseBody(token), cancellation: ct);
         }
-
-        public record RequestBody(string EmailAddress, string Password);
-
-        public record ResponseBody(string AccessToken);
     }
+
+    public record RequestBody(string EmailAddress, string Password);
+
+    public record ResponseBody(string AccessToken);
 }

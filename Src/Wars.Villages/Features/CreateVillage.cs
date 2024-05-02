@@ -11,7 +11,7 @@ internal static class CreateVillage
     internal class Endpoint(
         IVillagesRepository villagesRepository,
         ILogger<Endpoint> logger,
-        IMediator mediator) : Endpoint<Endpoint.Request>
+        IMediator mediator) : Endpoint<Request>
     {
         private readonly IVillagesRepository _villagesRepository = villagesRepository;
         private readonly ILogger<Endpoint> _logger = logger;
@@ -42,7 +42,7 @@ internal static class CreateVillage
 
             await _mediator.Publish(new VillageCreatedIntegrationEvent(newVillage.Id.ToString()), ct);
         }
-
-        internal record Request(string Name);
     }
+
+    internal record Request(string Name);
 }

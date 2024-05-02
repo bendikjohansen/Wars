@@ -1,13 +1,14 @@
 using Ardalis.Result;
 using FastEndpoints;
 using MediatR;
+using Wars.Common;
 using Wars.Resources.Domain;
 
 namespace Wars.Resources.Features;
 
 internal static class CollectResources
 {
-    internal class Endpoint(IMediator mediator) : Endpoint<Endpoint.RequestBody, Endpoint.ResponseBody>
+    internal class Endpoint(IMediator mediator) : Endpoint<Request, Response>
     {
         private readonly IMediator _mediator = mediator;
 
@@ -16,7 +17,7 @@ internal static class CollectResources
             Post("/collect-resources");
         }
 
-        public override async Task HandleAsync(RequestBody req, CancellationToken ct)
+        public override async Task HandleAsync(Request req, CancellationToken ct)
         {
             var command = new Command(req.VillageId);
             var result = await _mediator.Send(command, ct);
@@ -27,7 +28,7 @@ internal static class CollectResources
             }
 
             var resourceInventory = result.Value.ResourceInventory;
-            var response = new ResponseBody
+            var response = new Response
             {
                 Clay = (int)Math.Floor(resourceInventory.Clay),
                 Iron = (int)Math.Floor(resourceInventory.Iron),
@@ -36,20 +37,20 @@ internal static class CollectResources
 
             await SendAsync(response, cancellation: ct);
         }
+    }
 
-        public record RequestBody(string VillageId);
+    public record Request(string VillageId);
 
-        public record ResponseBody
-        {
-            public required int Clay { get; init; }
-            public required int Wood { get; init; }
-            public required int Iron { get; init; }
-        }
+    public record Response
+    {
+        public required int Clay { get; init; }
+        public required int Wood { get; init; }
+        public required int Iron { get; init; }
     }
 
     internal record Command(string VillageId) : IRequest<Result<Village>>;
 
-    internal class CommandHandler(IResourcesRepository resourcesRepository) : IRequestHandler<Command, Result<Village>>
+    internal class CommandHandler(IResourcesRepository resourcesRepository, Now now) : IRequestHandler<Command, Result<Village>>
     {
         private readonly IResourcesRepository _resourcesRepository = resourcesRepository;
 
@@ -61,7 +62,7 @@ internal static class CollectResources
                 return Result.NotFound();
             }
 
-            village.CollectResources(DateTimeOffset.UtcNow);
+            village.CollectResources(now());
             await _resourcesRepository.SaveChangesAsync(ct);
             return village;
         }

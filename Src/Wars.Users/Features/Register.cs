@@ -6,7 +6,8 @@ namespace Wars.Users.Features;
 
 internal static class Register
 {
-    internal class Endpoint(UserManager<ApplicationUser> userManager) : Endpoint<Endpoint.RequestBody, Endpoint.ResponseBody>
+    internal class Endpoint(UserManager<ApplicationUser> userManager)
+        : Endpoint<RequestBody>
     {
         private readonly UserManager<ApplicationUser> _userManager = userManager;
 
@@ -29,13 +30,7 @@ internal static class Register
 
             await SendOkAsync(cancellation: ct);
         }
-
-        public record RequestBody
-        {
-            public required string EmailAddress { get; init; }
-            public required string Password { get; init; }
-        }
-
-        public record ResponseBody(string AccessToken);
     }
+
+    public record RequestBody(string EmailAddress, string Password);
 }

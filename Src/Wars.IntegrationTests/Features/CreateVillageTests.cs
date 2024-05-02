@@ -1,8 +1,8 @@
 using FastEndpoints;
 using FastEndpoints.Testing;
-using Endpoint = Wars.Villages.Features.CreateVillage.Endpoint;
+using Wars.Villages.Features;
 
-namespace Wars.Villages.Tests;
+namespace Wars.IntegrationTests.Features;
 
 [Collection(nameof(Fixture))]
 public class CreateVillageTests(Fixture fixture) : TestBase<Fixture>
@@ -10,8 +10,10 @@ public class CreateVillageTests(Fixture fixture) : TestBase<Fixture>
     [Fact]
     public async Task Create_UserDoesNotAlreadyHaveAVillage_VillageIsCreated()
     {
-        var request = new Endpoint.Request("Riverwood");
-        var response = await fixture.Client.POSTAsync<Endpoint, Endpoint.Request>(request);
+        var client = await fixture.CreateUserClient();
+
+        var request = new CreateVillage.Request("Riverwood");
+        var response = await client.POSTAsync<CreateVillage.Endpoint, CreateVillage.Request>(request);
 
         response.EnsureSuccessStatusCode();
     }
