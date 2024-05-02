@@ -13,5 +13,6 @@
     </ItemGroup>
     <ItemGroup>
         <InternalsVisibleTo Include="Wars.IntegrationTests"/>
+        <InternalsVisibleTo Include="Wars.Resources.Tests"/>
     </ItemGroup>
 </Project>

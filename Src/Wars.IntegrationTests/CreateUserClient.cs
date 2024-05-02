@@ -44,7 +44,10 @@ internal static class UserClientFactory
         public static User CreateFake()
         {
             var faker = new Faker();
-            return new User(faker.Internet.Email(), faker.Internet.Password(prefix: "aA1!"));
+            return new User(
+                faker.Internet.Email(),
+                faker.Internet.Password(prefix: "aA1!")
+            );
         }
     }
 }

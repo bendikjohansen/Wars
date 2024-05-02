@@ -11,7 +11,7 @@ internal static class CreateResources
     internal class VillageCreatedEventHandler(
         IResourcesRepository repository,
         ILogger<VillageCreatedEventHandler> logger,
-        Common.Now now) : INotificationHandler<VillageCreatedIntegrationEvent>
+        Now now) : INotificationHandler<VillageCreatedIntegrationEvent>
     {
         private readonly IResourcesRepository _repository = repository;
         private readonly ILogger<VillageCreatedEventHandler> _logger = logger;

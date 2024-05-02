@@ -6,6 +6,8 @@ internal record Village
     public string OwnerId { get; private set; } = string.Empty;
     public string Name { get; private set; } = string.Empty;
 
+    private Village() {}
+
     internal static class Factory
     {
         public static Village Create(string ownerId, string name)
