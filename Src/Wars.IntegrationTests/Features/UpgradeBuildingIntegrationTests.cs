@@ -2,6 +2,7 @@ using FastEndpoints;
 using FastEndpoints.Testing;
 using FluentAssertions;
 using Wars.Buildings.Features;
+using Wars.Resources.Features;
 using Wars.Villages.Features;
 
 namespace Wars.IntegrationTests.Features;
@@ -30,12 +31,42 @@ public class UpgradeBuildingIntegrationTests(Fixture fixture) : TestBase<Fixture
         var villageId = await CreateVillageAndGetIdAsync(client);
 
         fixture.TimeProvider.Advance(TimeSpan.FromMinutes(5));
+        var resourcesBeforeQueue = await CollectResourcesAsync(client, villageId);
         var queueRequest = new QueueUpgrade.Request(villageId.ToString(), QueueUpgrade.RequestBuildingType.Headquarter);
         var queueResponse = await client.POSTAsync<QueueUpgrade.Endpoint, QueueUpgrade.Request>(queueRequest);
         queueResponse.Should().BeSuccessful();
 
         var buildings = await GetBuildingLevelsAsync(client, villageId);
+        var resourcesAfterQueue = await CollectResourcesAsync(client, villageId);
         buildings.UpgradeQueue.Should().NotBeEmpty();
+        resourcesAfterQueue.Clay.Should().BeLessThan(resourcesBeforeQueue.Clay);
+        resourcesAfterQueue.Iron.Should().BeLessThan(resourcesBeforeQueue.Iron);
+        resourcesAfterQueue.Wood.Should().BeLessThan(resourcesBeforeQueue.Wood);
+    }
+
+    [Fact]
+    public async Task ProcessBuildings_QueueIsComplete_BuildingLevelIsIncreased()
+    {
+        var client = await fixture.CreateUserClient();
+        var villageId = await CreateVillageAndGetIdAsync(client);
+
+        fixture.TimeProvider.Advance(TimeSpan.FromMinutes(5));
+        var queueRequest = new QueueUpgrade.Request(villageId.ToString(), QueueUpgrade.RequestBuildingType.Headquarter);
+        var queueResponse = await client.POSTAsync<QueueUpgrade.Endpoint, QueueUpgrade.Request>(queueRequest);
+        queueResponse.Should().BeSuccessful();
+
+        fixture.TimeProvider.Advance(TimeSpan.FromMinutes(5));
+        var buildings = await GetBuildingLevelsAsync(client, villageId);
+        buildings.UpgradeQueue.Should().BeEmpty();
+    }
+
+    private static async Task<CollectResources.Response> CollectResourcesAsync(HttpClient client, Guid villageId)
+    {
+        var request = new CollectResources.Request(villageId.ToString());
+        var response = await client
+            .POSTAsync<CollectResources.Endpoint, CollectResources.Request, CollectResources.Response>(request);
+        response.Response.Should().BeSuccessful();
+        return response.Result;
     }
 
     private static async Task<ProcessBuildingLevels.Response> GetBuildingLevelsAsync(HttpClient client, Guid villageId)

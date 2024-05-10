@@ -29,7 +29,8 @@ internal static class ProcessBuildingLevels
                 return;
             }
 
-            village.ProcessFinishedUpgrades(timeProvider.GetUtcNow());
+            var now = timeProvider.GetUtcNow();
+            village.ProcessFinishedUpgrades(now);
             await _context.SaveChangesAsync(ct);
 
             var levels = village.BuildingLevels;
@@ -79,11 +80,11 @@ internal static class ProcessBuildingLevels
 
         internal record BuildingRegistry
         {
-            public required int ClayPit { get; init;}
-            public required int LumberCamp { get; init;}
-            public required int IronMine { get; init;}
-            public required int Warehouse { get; init;}
-            public required int Headquarter { get; init;}
+            public required int ClayPit { get; init; }
+            public required int LumberCamp { get; init; }
+            public required int IronMine { get; init; }
+            public required int Warehouse { get; init; }
+            public required int Headquarter { get; init; }
         }
 
         internal record BuildingUpgrade

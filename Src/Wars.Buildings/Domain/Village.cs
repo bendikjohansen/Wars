@@ -5,8 +5,8 @@ internal record Village
     public string Id { get; private init; } = string.Empty;
     public BuildingLevelRegistry BuildingLevels { get; } = new();
 
-    private readonly List<BuildingUpgrade> _jobs = [];
-    public List<BuildingUpgrade> UpgradeQueue => _jobs.ToList();
+    private readonly List<BuildingUpgrade> _upgradeQueue = [];
+    public IReadOnlyCollection<BuildingUpgrade> UpgradeQueue => _upgradeQueue.ToArray();
 
     private Village() {}
 
@@ -27,13 +27,13 @@ internal record Village
         var upgradeCost = costLookup(building, buildingLevel);
         var duration = durationLookup(building, buildingLevel);
         var newJob = BuildingUpgrade.CreateFrom(building, upgradeCost, duration, now);
-        _jobs.Add(newJob);
+        _upgradeQueue.Add(newJob);
     }
 
     public void ProcessFinishedUpgrades(DateTimeOffset now)
     {
-        var finishedJobs = _jobs.TakeWhile(job => job.IsFinished(now)).ToArray();
-        _jobs.RemoveAll(job => finishedJobs.Contains(job));
+        var finishedJobs = _upgradeQueue.TakeWhile(job => job.IsFinished(now)).ToArray();
+        _upgradeQueue.RemoveAll(job => finishedJobs.Contains(job));
 
         foreach (var job in finishedJobs)
         {

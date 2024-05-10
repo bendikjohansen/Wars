@@ -25,8 +25,8 @@ internal record BuildingUpgrade
 
     public bool Started(DateTimeOffset now) => StartedAt <= now;
     public DateTimeOffset FinishedAt => StartedAt + Duration;
-    public TimeSpan TimeLeft(DateTimeOffset now) => now - FinishedAt;
-    public bool IsFinished(DateTimeOffset now) => TimeLeft(now) > TimeSpan.Zero;
+    public TimeSpan TimeLeft(DateTimeOffset now) => FinishedAt - now;
+    public bool IsFinished(DateTimeOffset now) => TimeLeft(now) < TimeSpan.Zero;
 }
 
 internal enum BuildingType
