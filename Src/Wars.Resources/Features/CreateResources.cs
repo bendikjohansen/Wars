@@ -1,6 +1,5 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Wars.Common;
 using Wars.Resources.Domain;
 using Wars.Villages.Contracts;
 
@@ -8,28 +7,29 @@ namespace Wars.Resources.Features;
 
 internal static class CreateResources
 {
-    internal class VillageCreatedEventHandler(
+    internal class VillageCreatedIntegrationEventHandler(
         IResourcesRepository repository,
-        ILogger<VillageCreatedEventHandler> logger,
-        Now now) : INotificationHandler<VillageCreatedIntegrationEvent>
+        ILogger<VillageCreatedIntegrationEventHandler> logger,
+        TimeProvider time) : INotificationHandler<VillageCreatedIntegrationEvent>
     {
         private readonly IResourcesRepository _repository = repository;
-        private readonly ILogger<VillageCreatedEventHandler> _logger = logger;
-        private readonly Now _now = now;
+        private readonly ILogger<VillageCreatedIntegrationEventHandler> _logger = logger;
+        private readonly TimeProvider _time = time;
 
         public async Task Handle(VillageCreatedIntegrationEvent notification, CancellationToken ct)
         {
             var existingVillage = await _repository.GetAsync(notification.VillageId, ct);
             if (existingVillage is not null)
             {
-                _logger.LogWarning("Resources already exists for village with ID {villageId}.", notification.VillageId);
+                _logger.LogWarning("{Module} already exists for village with ID {VillageId}.", "Resources", notification.VillageId);
+                return;
             }
 
-            var resources = new Village(_now())
+            var village = new Village(_time.GetUtcNow())
             {
                 Id = notification.VillageId
             };
-            _repository.Add(resources);
+            _repository.Add(village);
             await _repository.SaveChangesAsync(ct);
         }
     }

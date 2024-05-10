@@ -23,14 +23,14 @@ internal static class ListVillages
             var userId = User.FindFirst("UserId")!.Value;
 
             var villages = await _villagesRepository.ListByUserAsync(userId, ct);
-            _logger.LogInformation("Found {villageCount} villages for user.", villages.Count);
+            _logger.LogInformation("Found {VillageCount} villages for user.", villages.Count);
 
             var villageResponses = villages.Select(village => new VillageResponse(village.Id, village.Name));
             await SendAsync(new Response(villageResponses), cancellation: ct);
         }
     }
 
-    internal record Response(IEnumerable<VillageResponse> VillageDto);
+    internal record Response(IEnumerable<VillageResponse> Villages);
 
     internal record VillageResponse(Guid Id, string Name);
 }

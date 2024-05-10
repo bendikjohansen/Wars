@@ -1,7 +1,6 @@
 using Ardalis.Result;
 using FastEndpoints;
 using MediatR;
-using Wars.Common;
 using Wars.Resources.Domain;
 
 namespace Wars.Resources.Features;
@@ -25,6 +24,7 @@ internal static class CollectResources
             if (result.Status == ResultStatus.NotFound)
             {
                 await SendNotFoundAsync(ct);
+                return;
             }
 
             var resourceInventory = result.Value.ResourceInventory;
@@ -50,7 +50,9 @@ internal static class CollectResources
 
     internal record Command(string VillageId) : IRequest<Result<Village>>;
 
-    internal class CommandHandler(IResourcesRepository resourcesRepository, Now now) : IRequestHandler<Command, Result<Village>>
+    internal class CommandHandler(
+        IResourcesRepository resourcesRepository,
+        TimeProvider time) : IRequestHandler<Command, Result<Village>>
     {
         private readonly IResourcesRepository _resourcesRepository = resourcesRepository;
 
@@ -62,7 +64,7 @@ internal static class CollectResources
                 return Result.NotFound();
             }
 
-            village.CollectResources(now());
+            village.CollectResources(time.GetUtcNow());
             await _resourcesRepository.SaveChangesAsync(ct);
             return village;
         }

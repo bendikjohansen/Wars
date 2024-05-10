@@ -17,7 +17,7 @@ public class CreateVillageTests(Fixture fixture) : TestBase<Fixture>
         var request = new CreateVillage.Request("Riverwood");
         var response = await client.POSTAsync<CreateVillage.Endpoint, CreateVillage.Request>(request);
 
-        response.EnsureSuccessStatusCode();
+        response.Should().BeSuccessful();
     }
 
     [Fact]
@@ -29,7 +29,7 @@ public class CreateVillageTests(Fixture fixture) : TestBase<Fixture>
 
         var request = new CollectResources.Request(villageId.ToString());
         var response = await client.POSTAsync<CollectResources.Endpoint, CollectResources.Request, CollectResources.Response>(request);
-        response.Response.EnsureSuccessStatusCode();
+        response.Response.Should().BeSuccessful();
         response.Result.Clay.Should().Be(0);
         response.Result.Iron.Should().Be(0);
         response.Result.Wood.Should().Be(0);
@@ -39,11 +39,11 @@ public class CreateVillageTests(Fixture fixture) : TestBase<Fixture>
     {
         var request = new CreateVillage.Request("Riverwood");
         var response = await client.POSTAsync<CreateVillage.Endpoint, CreateVillage.Request>(request);
-        response.EnsureSuccessStatusCode();
+        response.Should().BeSuccessful();
 
         var listResponse = await client.GETAsync<ListVillages.Endpoint, ListVillages.Response>();
-        listResponse.Response.EnsureSuccessStatusCode();
-        var villageId = listResponse.Result.VillageDto.Single().Id;
+        listResponse.Response.Should().BeSuccessful();
+        var villageId = listResponse.Result.Villages.Single().Id;
         return villageId;
     }
 }

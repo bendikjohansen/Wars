@@ -24,7 +24,7 @@ public static class ResourcesModuleServicesExtensions
         // Register services
         services.AddScoped<IResourcesRepository, EfCoreResourceRepository>();
 
-        logger.Information("{module} module services added!", "Resources");
+        logger.Information("{Module} module services added!", "Resources");
 
         return services;
     }

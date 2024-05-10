@@ -8,7 +8,7 @@ internal class EfCoreResourceRepository(ResourcesContext context) : IResourcesRe
     private readonly ResourcesContext _context = context;
 
     public Task<Village?> GetAsync(string id, CancellationToken ct = default)
-        => _context.Villages.SingleOrDefaultAsync(r => r.Id == id, ct);
+        => _context.Villages.SingleOrDefaultAsync(v => v.Id == id, ct);
 
     public void Add(Village village)
     {

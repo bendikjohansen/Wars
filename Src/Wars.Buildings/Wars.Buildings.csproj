@@ -12,9 +12,13 @@
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Wars.Resources.Contracts\Wars.Resources.Contracts.csproj"/>
+        <ProjectReference Include="..\Wars.Villages.Contracts\Wars.Villages.Contracts.csproj" />
     </ItemGroup>
-
     <ItemGroup>
+        <InternalsVisibleTo Include="Wars.IntegrationTests"/>
         <InternalsVisibleTo Include="Wars.Buildings.Tests"/>
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Infrastructure\Data\Migrations\" />
     </ItemGroup>
 </Project>

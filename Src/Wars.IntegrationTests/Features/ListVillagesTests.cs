@@ -14,9 +14,9 @@ public class ListVillagesTests(Fixture fixture) : TestBase<Fixture>
         var client = await fixture.CreateUserClient();
         var response = await client.GETAsync<ListVillages.Endpoint, ListVillages.Response>();
 
-        response.Response.EnsureSuccessStatusCode();
+        response.Response.Should().BeSuccessful();
 
-        response.Result.VillageDto.Should().BeEmpty();
+        response.Result.Villages.Should().BeEmpty();
     }
 
     [Fact]
@@ -26,12 +26,11 @@ public class ListVillagesTests(Fixture fixture) : TestBase<Fixture>
 
         var createRequest = new CreateVillage.Request("Riverwood");
         var createResponse = await client.POSTAsync<CreateVillage.Endpoint, CreateVillage.Request>(createRequest);
-        createResponse.EnsureSuccessStatusCode();
+        createResponse.Should().BeSuccessful();
 
         var response = await client.GETAsync<ListVillages.Endpoint, ListVillages.Response>();
 
-        response.Response.EnsureSuccessStatusCode();
-
-        response.Result.VillageDto.Should().ContainSingle(village => village.Name == "Riverwood");
+        response.Response.Should().BeSuccessful();
+        response.Result.Villages.Should().ContainSingle(village => village.Name == "Riverwood");
     }
 }

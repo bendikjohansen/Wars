@@ -24,7 +24,7 @@ public static class VillagesModuleServiceExtensions
         // Add services
         services.AddScoped<IVillagesRepository, EfCoreVillagesRepository>();
 
-        logger.Information("{module} module services added!", "Villages");
+        logger.Information("{Module} module services added!", "Villages");
         return services;
     }
 }

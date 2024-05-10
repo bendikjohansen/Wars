@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using FastEndpoints;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -25,13 +26,13 @@ internal static class CreateVillage
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            var userId = User.FindFirst("UserId")!.Value;
+            var userId = User.FindFirstValue("UserId")!;
 
             var villages = await _villagesRepository.ListByUserAsync(userId, ct);
 
-            if (villages.Any())
+            if (villages.Count != 0)
             {
-                _logger.LogWarning("User {userId} has already created a village", userId);
+                _logger.LogWarning("User {UserId} has already created a village", userId);
                 await SendErrorsAsync(cancellation: ct);
                 return;
             }

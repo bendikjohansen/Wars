@@ -2,7 +2,7 @@ using System.Reflection;
 using FastEndpoints;
 using FastEndpoints.Security;
 using Serilog;
-using Wars.Common;
+using Wars.Buildings;
 using Wars.Resources;
 using Wars.Users;
 using Wars.Villages;
@@ -16,17 +16,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((_, config) =>
     config.ReadFrom.Configuration(builder.Configuration));
 
+builder.Services.AddSingleton(TimeProvider.System);
+
 builder.Services.AddFastEndpoints();
 builder.Services.AddAuthenticationJwtBearer(options => options.SigningKey = builder.Configuration["Auth:JwtSecret"]);
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication();
 
-builder.Services.AddNow();
-
 List<Assembly> mediatrAssemblies = [typeof(Program).Assembly];
 builder.Services.AddUserModuleServices(builder.Configuration, logger);
 builder.Services.AddVillageModuleServices(builder.Configuration, logger, mediatrAssemblies);
 builder.Services.AddResourceModuleServices(builder.Configuration, logger, mediatrAssemblies);
+builder.Services.AddBuildingsModuleServices(builder.Configuration, logger, mediatrAssemblies);
 
 builder.Services.AddMediatR(config => config.RegisterServicesFromAssemblies(mediatrAssemblies.ToArray()));
 

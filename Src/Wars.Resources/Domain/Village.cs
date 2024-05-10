@@ -19,6 +19,13 @@ internal record Village
         var resourcesCollected = ResourceBuilding.Collect(secondsElapsed);
         ResourceInventory.Add(resourcesCollected, now);
     }
+
+    public bool HasFunds(int clay, int iron, int wood) => ResourceInventory.Contains(clay, iron, wood);
+
+    public void Pay(int clay, int iron, int wood, DateTimeOffset now)
+    {
+        ResourceInventory.Pay(clay, iron, wood, now);
+    }
 }
 
 internal record ResourceInventory
@@ -42,6 +49,17 @@ internal record ResourceInventory
         Clay = Math.Min(Clay + collection.Clay, WarehouseCapacity);
         Iron = Math.Min(Iron + collection.Iron, WarehouseCapacity);
         Wood = Math.Min(Wood + collection.Wood, WarehouseCapacity);
+        UpdatedAt = now;
+    }
+
+    public bool Contains(int clay, int iron, int wood) =>
+        Clay >= clay && Iron >= iron && Wood >= wood;
+
+    public void Pay(int clay, int iron, int wood, DateTimeOffset now)
+    {
+        Clay -= clay;
+        Iron -= iron;
+        Wood -= wood;
         UpdatedAt = now;
     }
 }

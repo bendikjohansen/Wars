@@ -1,6 +1,7 @@
 using System.Net.Http.Headers;
 using Bogus;
 using FastEndpoints;
+using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Wars.Users.Features;
 
@@ -25,18 +26,18 @@ internal static class UserClientFactory
 
     private static async Task Register(HttpClient client, User user)
     {
-        var registerRequest = new Register.RequestBody(user.EmailAddress, user.Password);
-        var registerResponse = await client.POSTAsync<Register.Endpoint, Register.RequestBody>(registerRequest);
-        registerResponse.EnsureSuccessStatusCode();
+        var request = new Register.RequestBody(user.EmailAddress, user.Password);
+        var response = await client.POSTAsync<Register.Endpoint, Register.RequestBody>(request);
+        response.Should().BeSuccessful();
     }
 
     private static async Task<string> Login(HttpClient client, User user)
     {
-        var loginRequest = new Login.RequestBody(user.EmailAddress, user.Password);
-        var loginResponse = await client.POSTAsync<Login.Endpoint, Login.RequestBody, Login.ResponseBody>(loginRequest);
-        loginResponse.Response.EnsureSuccessStatusCode();
+        var request = new Login.RequestBody(user.EmailAddress, user.Password);
+        var response = await client.POSTAsync<Login.Endpoint, Login.RequestBody, Login.ResponseBody>(request);
+        response.Response.Should().BeSuccessful();
 
-        return loginResponse.Result.AccessToken;
+        return response.Result.AccessToken;
     }
 
     private record User(string EmailAddress, string Password)

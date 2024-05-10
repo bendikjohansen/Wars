@@ -8,7 +8,7 @@ internal class VillageConfiguration : IEntityTypeConfiguration<Village>
 {
     public void Configure(EntityTypeBuilder<Village> builder)
     {
-        builder.Property(v => v.Id).HasMaxLength(128);
+        builder.Property(v => v.Id).HasMaxLength(128).ValueGeneratedNever();
         builder.ComplexProperty(v => v.ResourceInventory);
         builder.ComplexProperty(v => v.ResourceBuilding);
     }

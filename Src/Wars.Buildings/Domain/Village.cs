@@ -2,11 +2,23 @@ namespace Wars.Buildings.Domain;
 
 internal record Village
 {
-    public required string Id { get; init; }
-    public BuildingLevelRegistry BuildingLevels { get; private init; } = new();
+    public string Id { get; private init; } = string.Empty;
+    public BuildingLevelRegistry BuildingLevels { get; } = new();
 
-    private readonly List<BuildingJob> _jobs = [];
-    public IEnumerable<BuildingJob> UpgradeQueue => _jobs.ToArray();
+    private readonly List<BuildingUpgrade> _jobs = [];
+    public List<BuildingUpgrade> UpgradeQueue => _jobs.ToList();
+
+    private Village() {}
+
+    public static Village CreateFrom(string id)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(id);
+
+        return new Village
+        {
+            Id = id,
+        };
+    }
 
     public void QueueUpgrade(BuildingType building, DateTimeOffset now, BuildingDurationLookup durationLookup,
         BuildingCostLookup costLookup)
@@ -14,13 +26,7 @@ internal record Village
         var buildingLevel = GetBuildingLevelAfterQueue(building) + 1;
         var upgradeCost = costLookup(building, buildingLevel);
         var duration = durationLookup(building, buildingLevel);
-        var newJob = new BuildingJob
-        {
-            Building = building,
-            Cost = upgradeCost,
-            StartedAt = now,
-            Duration = duration
-        };
+        var newJob = BuildingUpgrade.CreateFrom(building, upgradeCost, duration, now);
         _jobs.Add(newJob);
     }
 
@@ -35,7 +41,7 @@ internal record Village
         }
     }
 
-    private int GetBuildingLevelAfterQueue(BuildingType building)
+    public int GetBuildingLevelAfterQueue(BuildingType building)
     {
         var levelDelta = UpgradeQueue.Count(job => job.Building == building);
         var buildingLevel = levelDelta + building switch
@@ -45,7 +51,7 @@ internal record Village
             BuildingType.IronMine => BuildingLevels.IronMine,
             BuildingType.ClayPit => BuildingLevels.ClayPit,
             BuildingType.LumberCamp => BuildingLevels.LumberCamp,
-            _ => throw new Exception($"No such building: {building}")
+            _ => throw new NotSupportedException($"No such building: {building}")
         };
         return buildingLevel;
     }

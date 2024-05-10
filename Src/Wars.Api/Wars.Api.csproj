@@ -13,7 +13,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Wars.Common\Wars.Common.csproj" />
+    <ProjectReference Include="..\Wars.Buildings\Wars.Buildings.csproj" />
     <ProjectReference Include="..\Wars.Resources\Wars.Resources.csproj" />
     <ProjectReference Include="..\Wars.Users\Wars.Users.csproj" />
     <ProjectReference Include="..\Wars.Villages\Wars.Villages.csproj" />

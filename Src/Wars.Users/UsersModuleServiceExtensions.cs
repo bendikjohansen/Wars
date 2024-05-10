@@ -17,7 +17,7 @@ public static class UsersModuleServiceExtensions
         services.AddDbContext<UsersContext>(options => options.UseNpgsql(configuration.GetConnectionString("Users")));
         services.AddIdentityCore<ApplicationUser>().AddEntityFrameworkStores<UsersContext>();
 
-        logger.Information("{module} module services added!", "Users");
+        logger.Information("{Module} module services added!", "Users");
         return services;
     }
 }
