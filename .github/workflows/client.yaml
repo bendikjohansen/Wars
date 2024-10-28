@@ -6,22 +6,25 @@ on:
       - 'client/**'
   workflow_dispatch:
 
+env:
+  PROJECT_DIR: client
+
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: ./client
 
     steps:
       - uses: actions/checkout@v4
 
       - run: npm ci
+        working-directory: ${{ env.PROJECT_DIR }}
 
       - run: npm run lint
+        working-directory: ${{ env.PROJECT_DIR }}
 
       - run: npm run build
+        working-directory: ${{ env.PROJECT_DIR }}
 
       - run: npm run test -- --run --typecheck
+        working-directory: ${{ env.PROJECT_DIR }}
 
