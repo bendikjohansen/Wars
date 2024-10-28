@@ -8,6 +8,7 @@ on:
 
 env:
   PROJECT_DIR: server
+  DOTNET_NOLOGO: true
 
 jobs:
   build:
@@ -15,6 +16,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
 
       - run: dotnet restore
         working-directory: ${{ env.PROJECT_DIR }}
